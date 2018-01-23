@@ -210,7 +210,8 @@ void CrisprUtil::print_crispr_row(ofstream & out, deque<char> & crispr, string &
     out << "," << pam_right << "," << species_id << '\n';
 }
 
-void CrisprUtil::parse_genome(const string & filename, const string & outfile, int species_id, string pam) {
+void CrisprUtil::parse_genome(const string & filename, const string & outfile,
+                              int species_id, string pam) {
     cerr << "Loading genome from:\n" << filename << "\n";
     ifstream text( filename );
     ofstream out ( outfile );
@@ -227,11 +228,11 @@ void CrisprUtil::parse_genome(const string & filename, const string & outfile, i
     clock_t t = clock();
 
     string rev_pam = util::revcom( pam );
-    deque<char> current (23, 'N');
     string seqname, line;
     int64_t seqpos = 0;
-    int64_t patlen = 23; //should allow this to be configurable?
+    int64_t patlen = 21 + pam.size();
     uint64_t total = 0;
+    deque<char> current (patlen, 'N');
 
     //will need to process the pam here and make it a bit version
 
