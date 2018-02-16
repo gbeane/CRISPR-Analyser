@@ -403,7 +403,7 @@ void CrisprUtil::text_to_binary(const vector<string> & infiles, const string & o
                     
                     //calculate the length of the PAM
                     if (pam_length == 0) {
-                        pam_length = spl[2].length() = 20;
+                        pam_length = spl[2].length() - 20;
                         cerr << "pam length is " << pam_length << endl;
                     }
 
