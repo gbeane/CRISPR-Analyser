@@ -380,6 +380,8 @@ void CrisprUtil::text_to_binary(const vector<string> & infiles, const string & o
     out.seekp( offset + sizeof(*data), ios::beg );
 
     uint64_t total_skipped = 0;
+    
+    size_t pam_length = 0;
 
     cerr << "Version is " << VERSION << "\n";
 
@@ -398,14 +400,20 @@ void CrisprUtil::text_to_binary(const vector<string> & infiles, const string & o
                 if ( line.size() ) {
                     //split the line up so we can get the parts we want
                     vector<string> spl = util::split(line);
+                    
+                    //calculate the length of the PAM
+                    if (pam_length == 0) {
+                        pam_length = spl[2].length() = 20;
+                        cerr << "pam length is " << pam_length << endl;
+                    }
 
                     //treated as a boolean
                     short pam_right = stoi( spl[3] );
                     if ( ! (pam_right == 0 || pam_right == 1) )
                         throw runtime_error( "pam_right field must be 1 or 0" );
 
-                    //if its pam right remove last 3 chars, if its pam left remove first 3
-                    string seq = pam_right ? spl[2].substr(0, 20) : spl[2].substr(3);
+                    //if its pam right remove last pam_length chars, if its pam left remove first pam_length
+                    string seq = pam_right ? spl[2].substr(0, 20) : spl[2].substr(pam_length);
 
                     if ( seq.length() != data->seq_length )
                         throw runtime_error( "Different seq lengths in file!" );
